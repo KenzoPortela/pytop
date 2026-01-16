@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pytop"
+version = "1.0.0"
+description = "htop-like system monitor for Windows, written in Python"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {file = "LICENSE.txt"}
+authors = [
+  {name = "Kenzo Portela", email = "portelakenzo@gmail.com"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+]
+dependencies = [
+    "psutil>=5.8.0",
+    "WMI>=1.5.1",
+    "windows-curses>=2.3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/kenzoportela/pytop"
+
+[project.scripts]
+pytop = "pytop.main:run"
