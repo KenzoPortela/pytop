@@ -1,3 +1,15 @@
+                      $$\                         
+                      $$ |                        
+ $$$$$$\  $$\   $$\ $$$$$$\    $$$$$$\   $$$$$$\  
+$$  __$$\ $$ |  $$ |\_$$  _|  $$  __$$\ $$  __$$\ 
+$$ /  $$ |$$ |  $$ |  $$ |    $$ /  $$ |$$ /  $$ |
+$$ |  $$ |$$ |  $$ |  $$ |$$\ $$ |  $$ |$$ |  $$ |
+$$$$$$$  |\$$$$$$$ |  \$$$$  |\$$$$$$  |$$$$$$$  |
+$$  ____/  \____$$ |   \____/  \______/ $$  ____/ 
+$$ |      $$\   $$ |                    $$ |      
+$$ |      \$$$$$$  |                    $$ |      
+\__|       \______/                     \__|      
+
 # PyTop - htop in Python
 
 A dynamic, htop-like system monitor for Windows with real-time CPU, GPU, memory monitoring and process management, made in Python
