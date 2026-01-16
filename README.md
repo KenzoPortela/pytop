@@ -1,6 +1,6 @@
-# PyTop - htop for Python
+# PyTop - htop in Python
 
-A dynamic, htop-like system monitor for Windows with real-time CPU, GPU, memory monitoring and process management.
+A dynamic, htop-like system monitor for Windows with real-time CPU, GPU, memory monitoring and process management, made in Python
 
 ## Features
 
