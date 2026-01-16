@@ -1,4 +1,4 @@
-<img width="432" height="212" alt="pytop_rainbow" src="https://github.com/user-attachments/assets/c98d64d0-82cf-4e80-8e2b-ec8fdeb98f4e" />
+<img width="1080" height="530" alt="pytop" src="https://github.com/user-attachments/assets/095d3765-312c-4ab2-89a1-1e4f85d6870a" />
 
 # PyTop - htop in Python
 
