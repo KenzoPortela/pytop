@@ -13,9 +13,10 @@ A dynamic, htop-like system monitor for Windows with real-time CPU, GPU, memory 
 - Responsive layout that adapts to terminal size
 
 ## Installation
-```bash
-pip install pytop
-```
+
+See the avaliable wheel (`.whl`) and archive (`tar.gz`) files in the release section
+
+PyPi validation pending, to allow install via `pip install` command, so stay tuned!
 
 ## Usage
 
