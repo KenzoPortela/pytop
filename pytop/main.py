@@ -286,3 +286,7 @@ def main(stdscr):
             time.sleep(0.3)
         except (curses.error, KeyboardInterrupt):
             break
+
+def run():
+    """Entry point for the pytop command."""
+    curses.wrapper(main)
