@@ -2,6 +2,7 @@ import curses
 import psutil
 import time
 import wmi
+import winreg
 
 # Initialize WMI
 try:
@@ -44,28 +45,70 @@ def draw_bar(stdscr, y, x, label, percent, width, extra_info=""):
     except curses.error:
         pass
 
+import winreg
+
+def get_physical_vram_capacity():
+    """Tries multiple methods to get the true 64-bit VRAM capacity."""
+    # Method 1: Registry check (Best for 4GB+ cards)
+    try:
+        path = r"SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}"
+        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, path) as key:
+            for i in range(10):
+                try:
+                    with winreg.OpenKey(key, f"{i:04d}") as subkey:
+                        val, _ = winreg.QueryValueEx(subkey, "HardwareInformation.qwMemorySize")
+                        if val and int(val) > 0: 
+                            return int(val)
+                except: continue
+    except: pass
+
+    # Method 2: WMI check (Will be negative if >4GB, so we fix the overflow)
+    try:
+        for controller in wmi_obj.Win32_VideoController():
+            if controller.AdapterRAM:
+                ram = int(controller.AdapterRAM)
+                if ram < 0: # Handle the 32-bit overflow
+                    ram += 2**32
+                return ram
+    except: pass
+
+    # Method 3: Hard Fallback (If you know you have 8GB, we use it as a last resort)
+    return 8 * 1024**3 
+
+# Initialize this globally
+TOTAL_VRAM_BYTES = get_physical_vram_capacity()
+
 def get_gpu_data():
     gpu_usage = 0
     vram_percent = 0
-    total_mem = psutil.virtual_memory().total
-    vram_total_limit = total_mem // 2 
-    vram_info = f"0.00/{vram_total_limit / (1024**3):.1f}GB"
+    used_bytes = 0
     
     if not wmi_obj:
-        return gpu_usage, vram_percent, vram_info
+        return 0, 0, "N/A"
 
     try:
+        # GPU Load
         gpu_stats = wmi_obj.query("SELECT UtilizationPercentage FROM Win32_PerfFormattedData_GPUPerformanceCounters_GPUEngine WHERE Name LIKE '%engtype_3D%'")
         if gpu_stats:
             gpu_usage = min(sum(int(item.UtilizationPercentage) for item in gpu_stats), 100)
 
-        vram_stats = wmi_obj.query("SELECT DedicatedUsage, SharedUsage FROM Win32_PerfRawData_GPUPerformanceCounters_GPUAdapterMemory")
+        # Dedicated VRAM Usage
+        vram_stats = wmi_obj.query("SELECT DedicatedUsage FROM Win32_PerfRawData_GPUPerformanceCounters_GPUAdapterMemory")
         if vram_stats:
-            used_bytes = max((int(item.DedicatedUsage) + int(item.SharedUsage)) for item in vram_stats)
-            vram_percent = (used_bytes / vram_total_limit) * 100
-            vram_info = f"{used_bytes / (1024**3):.2f}/{vram_total_limit / (1024**3):.1f}GB"
-    except:
-        pass
+            # We use max() because different 'engines' report usage; the highest is the card total.
+            # We use abs() and handle potential 32-bit overflow for used_bytes too.
+            raw_used = max(int(item.DedicatedUsage) for item in vram_stats)
+            if raw_used < 0: 
+                raw_used += 2**32
+            used_bytes = raw_used
+            
+        vram_percent = (used_bytes / TOTAL_VRAM_BYTES) * 100
+        vram_info = f"{used_bytes / (1024**3):.2f}/{TOTAL_VRAM_BYTES / (1024**3):.1f}GB"
+        
+    except Exception as e:
+        # If it still fails, return 0s instead of crashing the UI
+        return 0, 0, f"Sync Error"
+        
     return gpu_usage, vram_percent, vram_info
 
 def main(stdscr):
