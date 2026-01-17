@@ -14,7 +14,7 @@ A dynamic, htop-like system monitor for Windows with real-time CPU, GPU, memory 
 
 ## Installation
 
-See the avaliable wheel (`.whl`) and archive (`tar.gz`) files in the release section
+See the avaliable wheel (`.whl`) and archive (`tar.gz`) files in the [releases](https://github.com/KenzoPortela/pytop/releases) section
 
 PyPi validation pending, to allow install via `pip install` command, so stay tuned!
 
